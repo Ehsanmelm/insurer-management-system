@@ -5,7 +5,7 @@ from insured.models import InsurerModel
 
 class CategoryModel(models.Model):
     category_name = models.CharField(max_length=255)
-    creation_date = models.DateField(default=None , auto_now_add=True)
+    creation_date = models.DateField( auto_now_add=True)
 
     def __str__(self) :
         return f"{self.category_name}"
@@ -29,12 +29,12 @@ class PolicyRecordModel(models.Model):
 
     insurer = models.ForeignKey(InsurerModel , on_delete=models.CASCADE)
     policy =models.ForeignKey(PolicyModel , on_delete=models.CASCADE)
-    status = models.CharField(choices=STATUS_CHOICES , default='Pending')
+    status = models.CharField(choices=STATUS_CHOICES , max_length=255, default='Pending')
 
 
 class QuestionModel(models.Model):
     insurer = models.ForeignKey(InsurerModel , on_delete=models.CASCADE)
-    policy = models.ForeignKey(PolicyModel , on_delete=models.CASCADE)
+    policy = models.ForeignKey(PolicyModel , on_delete=models.CASCADE )
     question = models.TextField()
     answer = models.TextField(null=True)
     created_at = models.DateField(auto_now_add=True)

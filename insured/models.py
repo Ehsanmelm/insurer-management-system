@@ -6,7 +6,7 @@ from django.contrib import admin
 
 
 class InsurerModel(models.Model):
-    user = models.OneToOneField(settings.USER_AUTH_MODEL , on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL , on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
     phone = models.CharField(max_length=12)
 
@@ -16,5 +16,5 @@ class InsurerModel(models.Model):
 
     
     @admin.display(ordering='user__last_name')
-    def first_name(self):
+    def last_name(self):
         return self.user.last_name
