@@ -30,3 +30,11 @@ class PolicyRecordModel(models.Model):
     insurer = models.ForeignKey(InsurerModel , on_delete=models.CASCADE)
     policy =models.ForeignKey(PolicyModel , on_delete=models.CASCADE)
     status = models.CharField(choices=STATUS_CHOICES , default='Pending')
+
+
+class QuestionModel(models.Model):
+    insurer = models.ForeignKey(InsurerModel , on_delete=models.CASCADE)
+    policy = models.ForeignKey(PolicyModel , on_delete=models.CASCADE)
+    question = models.TextField()
+    answer = models.TextField(null=True)
+    created_at = models.DateField(auto_now_add=True)
