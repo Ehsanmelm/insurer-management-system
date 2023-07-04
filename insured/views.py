@@ -13,9 +13,9 @@ class InsurerViewSet(ModelViewSet):
     serializer_class = InsurerSerializer
     def get_queryset(self):
         if self.request.user.is_staff:
-            queryset = InsurerModel.objects.all()
+            return InsurerModel.objects.all()
         
-        queryset = InsurerModel.objects.get(user_id=self.request.user.id )
+        return InsurerModel.objects.filter(user_id=self.request.user.id )
 
     def get_serializer_context(self):
         return {"user_id" : self.request.user.id} 
