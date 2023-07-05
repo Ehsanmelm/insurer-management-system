@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import QuestionModel , CategoryModel
+from .models import QuestionModel , CategoryModel , PolicyModel,PolicyRecordModel
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +11,8 @@ class PolicySerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     class Meta:
         fields = ['id' , 'category' , 'policy_name' , 'permium', 'ternure' , 'created_at']
+        model = PolicyModel
+
 
 class QuestionsSerializer(serializers.ModelSerializer):
     insurer_id = serializers.IntegerField(read_only =True)
