@@ -20,6 +20,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/' , include("insured.urls")),
     path('api/' , include("policyholder.urls")),
+    # path('auth/', include('djoser.urls')),
+    # path('auth/', include('djoser.urls.jwt'))
+
     path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.jwt'))
+    path('auth/', include('djoser.urls.authtoken')),
 ]
