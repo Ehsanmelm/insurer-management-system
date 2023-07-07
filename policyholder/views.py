@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser,IsAuthenticated  , SAFE_METHODS ,AllowAny
-from .models import PolicyModel , CategoryModel , PolicyRecordModel
+from .models import PolicyModel , CategoryModel , PolicyRecordModel , QuestionModel
 from .serializers import PolicySerializer,CategorySerializer , QuestionsSerializer , PolicyRecordSerializer 
 # Create your views here.
 
@@ -33,3 +33,10 @@ class PolicyRecordViewset(ModelViewSet):
     queryset = PolicyRecordModel.objects.all().order_by('status')
     serializer_class = PolicyRecordSerializer
 
+
+class QuestionViewset(ModelViewSet):
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return QuestionModel.objects.all()
+        return QuestionModel.objects.filter(insurer__id = self.request.id)
+    
