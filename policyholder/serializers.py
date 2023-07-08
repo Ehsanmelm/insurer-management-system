@@ -31,17 +31,25 @@ class PolicyRecordSerializer(serializers.ModelSerializer):
 
 class InsurerQuestionsSerializer(serializers.ModelSerializer):
     insurer_id = serializers.IntegerField(read_only=True)
+    answer = serializers.CharField(read_only=True)
 
     class Meta:
-        fields = ['id', 'insurer_id'
-                  'question', 'answer', 'created_at']
+        fields = ['id', 'insurer_id', 'answer',
+                  'question', 'created_at']
         model = QuestionModel
+
+    def create(self, validated_data):
+        insurer_id = self.context['insurer_id']
+        return QuestionModel.objects.create(insurer_id=insurer_id, **validated_data)
 
 
 class AdminQuestionsSerializer(serializers.ModelSerializer):
-    policy_id = serializers.IntegerField(read_only=True)
-
     class Meta:
-        fields = ['id',  'policy_id',
+        fields = ['id',
                   'question', 'answer', 'created_at']
         model = QuestionModel
+
+    def update(self, instance, validated_data):
+        instance.answer = validated_data.get('answer', instance.answer)
+        instance.save()
+        return instance
