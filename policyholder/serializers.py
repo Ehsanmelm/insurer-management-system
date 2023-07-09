@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import QuestionModel, CategoryModel, PolicyModel, PolicyRecordModel
+from insured.serializers import InsurerSerializer
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -71,8 +72,10 @@ class InsurerQuestionsSerializer(serializers.ModelSerializer):
 
 
 class AdminQuestionsSerializer(serializers.ModelSerializer):
+    insurer = InsurerSerializer()
+
     class Meta:
-        fields = ['id',
+        fields = ['id', 'insurer',
                   'question', 'answer', 'created_at']
         model = QuestionModel
 
