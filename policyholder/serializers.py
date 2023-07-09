@@ -16,13 +16,40 @@ class PolicySerializer(serializers.ModelSerializer):
         model = PolicyModel
 
 
+# class InsurerPolicySerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         fields = ['id', 'category', 'policy_name',
+#                   'permium', 'ternure', 'created_at', 'is_selected']
+#         model = PolicyModel
+#         read_only_fields = ['category', 'policy_name',
+#                             'permium', 'ternure', 'created_at']
+
+#     def update(self, instance, validated_data):
+#         instance.is_selected = validated_data.get(
+#             PolicyModel, instance.is_selected)
+#         instance.save()
+#         return instance
+
+    # def create(self, validated_data):
+    #     is_selected= self.context['is_selected']
+    #     if is_selected:
+    #         PolicyModel.objects.create()
+
+    # def update(self, instance, validated_data):
+
+
 class PolicyRecordSerializer(serializers.ModelSerializer):
-    policy = PolicySerializer()
     insurer_id = serializers.IntegerField(read_only=True)
 
     class Meta:
         fields = ['id', 'insurer_id', 'policy', 'status']
         model = PolicyRecordModel
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.context['is_staff']:
+            self.fields['status'].read_only = True
 
     def create(self, validated_data):
         insurer_id = self.context['insurer_id']

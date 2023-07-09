@@ -13,11 +13,18 @@ class CategoryModel(models.Model):
 
 
 class PolicyModel(models.Model):
+    SELECTED_CHOICES = [
+        ("Not Selected", "Not Selected"),
+        ("Selected", "Selected"),
+    ]
+
     category = models.ForeignKey(CategoryModel, on_delete=models.CASCADE)
     policy_name = models.CharField(max_length=255)
     permium = models.IntegerField()
     ternure = models.IntegerField()
     created_at = models.DateField(auto_now_add=True)
+    is_selected = models.CharField(
+        choices=SELECTED_CHOICES, max_length=255, default='Not Selected')
 
     def __str__(self):
         return f"{self.policy_name}"

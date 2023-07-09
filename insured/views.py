@@ -1,4 +1,4 @@
-from django.shortcuts import render , get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -11,11 +11,12 @@ from .serializers import InsurerSerializer
 
 class InsurerViewSet(ModelViewSet):
     serializer_class = InsurerSerializer
+
     def get_queryset(self):
         if self.request.user.is_staff:
             return InsurerModel.objects.all()
-        
-        return InsurerModel.objects.filter(user_id=self.request.user.id )
+
+        return InsurerModel.objects.filter(user_id=self.request.user.id)
 
     def get_serializer_context(self):
-        return {"user_id" : self.request.user.id} 
+        return {"user_id": self.request.user.id}

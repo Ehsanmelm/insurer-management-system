@@ -17,6 +17,10 @@ class CategoryViewset(ModelViewSet):
 class PolicyViewSet(ModelViewSet):
     queryset = PolicyModel.objects.all()
     serializer_class = PolicySerializer
+    # def get_serializer_class(self):
+    #     if self.request.user.is_staff:
+    #         return AdminPolicySerializer
+    #     return InsurerPolicySerializer
 
     def get_permissions(self):
         if self.request.user.is_staff:
@@ -31,9 +35,22 @@ class PolicyViewSet(ModelViewSet):
 
 
 class PolicyRecordViewset(ModelViewSet):
-    permission_classes = [IsAdminUser]
-    queryset = PolicyRecordModel.objects.all().order_by('status')
+    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return PolicyRecordModel.objects.all().order_by('status')
+        return PolicyRecordModel.objects.filter(insurer_id=self.request.user.id)
+
+    # queryset = PolicyRecordModel.objects.all().order_by('status')
     serializer_class = PolicyRecordSerializer
+
+    def get_serializer_context(self):
+        contex = {"is_staff": self.request.user.is_staff}
+        if not self.request.user.is_staff:
+            contex['insurer_id'] = self.request.user.id
+        return contex
 
 
 class QuestionViewset(ModelViewSet):
