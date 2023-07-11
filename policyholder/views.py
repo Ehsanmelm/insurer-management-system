@@ -51,19 +51,12 @@ class PolicyRecordViewset(ModelViewSet):
     # queryset = PolicyRecordModel.objects.all().order_by('status')
 
     def get_serializer_context(self):
-        contex = {"is_staff": self.request.user.is_staff}
+        context = super().get_serializer_context()
+        context = {"is_staff": self.request.user.is_staff}
+        context['request'] = self.request
         if not self.request.user.is_staff:
-            contex['insurer_id'] = self.request.user.id
-        return contex
-
-
-class PolicyDetailView(APIView):
-    def get(self, request, pk):
-        # queryset = PolicyModel.objects.filter(id=pk)
-        # serializer = PolicySerializer(queryset, context={'request': request})
-
-        # return Response(serializer.data)
-        return Response("ok")
+            context['insurer_id'] = self.request.user.id
+        return context
 
 
 class QuestionViewset(ModelViewSet):

@@ -11,7 +11,7 @@ router.register('question', views.QuestionViewset, basename='question')
 
 
 urlpatterns = router.urls
-urlpatterns += [
-    path('policy_detail/<int:pk>/',
-         views.PolicyDetailView.as_view(), name='PolicyDetailView')
-]
+# urlpatterns += [
+#     path('policy_detail/<int:pk>/',
+#          views.PolicyDetailView.as_view(), name='PolicyDetailView')
+# ]

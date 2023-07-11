@@ -12,8 +12,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class PolicySerializer(serializers.ModelSerializer):
     # category = CategorySerializer()
-    policy_name = serializers.HyperlinkedRelatedField(
-        queryset=PolicyModel.objects.all(), view_name='PolicyDetailView')
+    # policy_name = serializers.HyperlinkedRelatedField(
+    #     queryset=PolicyModel.objects.all(), view_name='PolicyDetailView')
 
     class Meta:
         fields = ['id', 'category', 'policy_name',
@@ -49,9 +49,10 @@ class PolicySerializer(serializers.ModelSerializer):
 
 class PolicyRecordSerializer(serializers.ModelSerializer):
     insurer_id = serializers.IntegerField(read_only=True)
-    # policy = serializers.HyperlinkedRelatedField(
-    #     queryset=PolicyModel.objects.all(),
-    #     view_name="policy")
+    policy = serializers.HyperlinkedRelatedField(
+        queryset=PolicyModel.objects.all(),
+        view_name="policy-detail",
+        lookup_field='pk')
 
     class Meta:
         fields = ['id', 'insurer_id', 'policy', 'status']
