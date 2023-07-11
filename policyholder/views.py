@@ -40,7 +40,6 @@ class PolicyRecordViewset(ModelViewSet):
             return PolicyRecordModel.objects.all().order_by('-status')
         return PolicyRecordModel.objects.filter(insurer_id=InsurerModel.objects.get(user_id=self.request.user.id).id)
 
-    # queryset = PolicyRecordModel.objects.all().order_by('status')
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
