@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, SAFE_METHODS, AllowAny
-from .models import PolicyModel, CategoryModel, PolicyRecordModel, QuestionModel
+from .models import PolicyModel, CategoryModel, PolicyRecordModel, QuestionModel, InsurerModel
 from .serializers import PolicySerializer, CategorySerializer, AdminQuestionsSerializer, InsurerQuestionsSerializer, PolicyRecordSerializer
 # Create your views here.
 
@@ -17,10 +17,6 @@ class CategoryViewset(ModelViewSet):
 class PolicyViewSet(ModelViewSet):
     queryset = PolicyModel.objects.all()
     serializer_class = PolicySerializer
-    # def get_serializer_class(self):
-    #     if self.request.user.is_staff:
-    #         return AdminPolicySerializer
-    #     return InsurerPolicySerializer
 
     def get_permissions(self):
         if self.request.user.is_staff:
@@ -34,10 +30,6 @@ class PolicyViewSet(ModelViewSet):
         return {'insurer_id': None, 'request': self.request}
 
 
-# class PolicyRecordViewset(APIView):
-#     def get(self, request, pk):
-#         Response('ok')
-
 class PolicyRecordViewset(ModelViewSet):
     # permission_classes = [IsAdminUser]
     permission_classes = [IsAuthenticated]
@@ -45,8 +37,8 @@ class PolicyRecordViewset(ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return PolicyRecordModel.objects.all().order_by('status')
-        return PolicyRecordModel.objects.filter(insurer_id=self.request.user.id)
+            return PolicyRecordModel.objects.all().order_by('-status')
+        return PolicyRecordModel.objects.filter(insurer_id=InsurerModel.objects.get(user_id=self.request.user.id).id)
 
     # queryset = PolicyRecordModel.objects.all().order_by('status')
 
@@ -55,7 +47,8 @@ class PolicyRecordViewset(ModelViewSet):
         context = {"is_staff": self.request.user.is_staff}
         context['request'] = self.request
         if not self.request.user.is_staff:
-            context['insurer_id'] = self.request.user.id
+            context['insurer_id'] = InsurerModel.objects.get(
+                user_id=self.request.user.id).id
         return context
 
 

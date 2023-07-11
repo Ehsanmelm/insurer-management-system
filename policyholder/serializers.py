@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
-from .models import QuestionModel, CategoryModel, PolicyModel, PolicyRecordModel
+from .models import QuestionModel, CategoryModel, PolicyModel, PolicyRecordModel, InsurerModel
 from insured.serializers import InsurerSerializer
 
 
@@ -48,14 +48,19 @@ class PolicySerializer(serializers.ModelSerializer):
 
 
 class PolicyRecordSerializer(serializers.ModelSerializer):
-    insurer_id = serializers.IntegerField(read_only=True)
+    # insurer_id = serializers.IntegerField(read_only=True)
+    insurer = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        view_name='insurer-detail',
+        lookup_field='pk')
+
     policy = serializers.HyperlinkedRelatedField(
         queryset=PolicyModel.objects.all(),
         view_name="policy-detail",
         lookup_field='pk')
 
     class Meta:
-        fields = ['id', 'insurer_id', 'policy', 'status']
+        fields = ['id', 'insurer', 'policy', 'status']
         model = PolicyRecordModel
 
     def __init__(self, *args, **kwargs):
@@ -65,7 +70,8 @@ class PolicyRecordSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         insurer_id = self.context['insurer_id']
-        return PolicyRecordModel.objects.create(insurer_id=insurer_id, **validated_data)
+        insurer = InsurerModel.objects.get(id=insurer_id)
+        return PolicyRecordModel.objects.create(insurer=insurer, **validated_data)
 
 
 class InsurerQuestionsSerializer(serializers.ModelSerializer):
