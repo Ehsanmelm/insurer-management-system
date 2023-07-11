@@ -31,12 +31,17 @@ class PolicyViewSet(ModelViewSet):
             return [IsAdminUser()]
 
     def get_serializer_context(self):
-        return {'insurer_id': None}
+        return {'insurer_id': None, 'request': self.request}
 
+
+# class PolicyRecordViewset(APIView):
+#     def get(self, request, pk):
+#         Response('ok')
 
 class PolicyRecordViewset(ModelViewSet):
     # permission_classes = [IsAdminUser]
     permission_classes = [IsAuthenticated]
+    serializer_class = PolicyRecordSerializer
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -44,13 +49,21 @@ class PolicyRecordViewset(ModelViewSet):
         return PolicyRecordModel.objects.filter(insurer_id=self.request.user.id)
 
     # queryset = PolicyRecordModel.objects.all().order_by('status')
-    serializer_class = PolicyRecordSerializer
 
     def get_serializer_context(self):
         contex = {"is_staff": self.request.user.is_staff}
         if not self.request.user.is_staff:
             contex['insurer_id'] = self.request.user.id
         return contex
+
+
+class PolicyDetailView(APIView):
+    def get(self, request, pk):
+        # queryset = PolicyModel.objects.filter(id=pk)
+        # serializer = PolicySerializer(queryset, context={'request': request})
+
+        # return Response(serializer.data)
+        return Response("ok")
 
 
 class QuestionViewset(ModelViewSet):

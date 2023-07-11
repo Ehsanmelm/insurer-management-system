@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.fields import empty
 from .models import QuestionModel, CategoryModel, PolicyModel, PolicyRecordModel
 from insured.serializers import InsurerSerializer
 
@@ -11,11 +12,17 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class PolicySerializer(serializers.ModelSerializer):
     # category = CategorySerializer()
+    policy_name = serializers.HyperlinkedRelatedField(
+        queryset=PolicyModel.objects.all(), view_name='PolicyDetailView')
+
     class Meta:
         fields = ['id', 'category', 'policy_name',
                   'permium', 'ternure', 'created_at']
         model = PolicyModel
 
+    # def __init__(self, *args, **kwargs):
+    #     request = kwargs.pop('context')['request']
+    #     super().__init__(context={'request': request}, *args, **kwargs)
 
 # class InsurerPolicySerializer(serializers.ModelSerializer):
 
@@ -42,6 +49,9 @@ class PolicySerializer(serializers.ModelSerializer):
 
 class PolicyRecordSerializer(serializers.ModelSerializer):
     insurer_id = serializers.IntegerField(read_only=True)
+    # policy = serializers.HyperlinkedRelatedField(
+    #     queryset=PolicyModel.objects.all(),
+    #     view_name="policy")
 
     class Meta:
         fields = ['id', 'insurer_id', 'policy', 'status']
