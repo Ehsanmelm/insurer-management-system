@@ -67,4 +67,4 @@ class QuestionViewset(ModelViewSet):
 
     def get_serializer_context(self):
         if not self.request.user.is_staff:
-            return {'insurer_id': self.request.user.id}
+            return {'insurer_id': InsurerModel.objects.get(user_id=self.request.user.id).id}

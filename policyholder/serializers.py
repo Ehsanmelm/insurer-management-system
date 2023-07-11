@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
 from .models import QuestionModel, CategoryModel, PolicyModel, PolicyRecordModel, InsurerModel
+from core.models import User
 from insured.serializers import InsurerSerializer
 
 
@@ -20,35 +21,8 @@ class PolicySerializer(serializers.ModelSerializer):
                   'permium', 'ternure', 'created_at']
         model = PolicyModel
 
-    # def __init__(self, *args, **kwargs):
-    #     request = kwargs.pop('context')['request']
-    #     super().__init__(context={'request': request}, *args, **kwargs)
-
-# class InsurerPolicySerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         fields = ['id', 'category', 'policy_name',
-#                   'permium', 'ternure', 'created_at', 'is_selected']
-#         model = PolicyModel
-#         read_only_fields = ['category', 'policy_name',
-#                             'permium', 'ternure', 'created_at']
-
-#     def update(self, instance, validated_data):
-#         instance.is_selected = validated_data.get(
-#             PolicyModel, instance.is_selected)
-#         instance.save()
-#         return instance
-
-    # def create(self, validated_data):
-    #     is_selected= self.context['is_selected']
-    #     if is_selected:
-    #         PolicyModel.objects.create()
-
-    # def update(self, instance, validated_data):
-
 
 class PolicyRecordSerializer(serializers.ModelSerializer):
-    # insurer_id = serializers.IntegerField(read_only=True)
     insurer = serializers.HyperlinkedRelatedField(
         read_only=True,
         view_name='insurer-detail',
@@ -89,11 +63,12 @@ class InsurerQuestionsSerializer(serializers.ModelSerializer):
 
 
 class AdminQuestionsSerializer(serializers.ModelSerializer):
-    insurer = InsurerSerializer()
+    email = serializers.EmailField(read_only=True, source='insurer.user.email')
+    phone = serializers.CharField(read_only=True, source='insurer.phone')
 
     class Meta:
-        fields = ['id', 'insurer',
-                  'question', 'answer', 'created_at']
+        fields = ['id',
+                  'question', 'answer', 'email', 'phone',  'created_at']
         model = QuestionModel
 
     def update(self, instance, validated_data):
